@@ -42,7 +42,13 @@ public class JWTFilter extends OncePerRequestFilter{
 		        SecurityContextHolder.getContext().setAuthentication(authToken);
 		    }
 		}
+		System.out.println("🔐 JWTFilter invoked");
+		System.out.println("Authorization Header: " + authHeader);
+		System.out.println("Extracted Email from Token: " + email);
+
 		 filterChain.doFilter(request, response);
+		 
+
 
 		
 	}

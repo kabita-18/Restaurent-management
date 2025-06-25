@@ -21,6 +21,10 @@ public interface MyJPARepository extends CrudRepository<Menu,String> {
 	int updateMenuByManager(@Param("dishname") String dishname, @Param("status") String status);
 
 	
+
+	boolean existsBydishname(String dishname);
+
+	
 	
 	
 

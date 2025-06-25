@@ -14,7 +14,9 @@ import example.com.model.Login;
 import example.com.model.Manager;
 import example.com.model.Menu;
 import example.com.model.Orders;
+import example.com.model.PasswordUpdateRequest;
 import example.com.model.RegisterUser;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class ManagementServiceImpl implements ManagementService {
@@ -69,11 +71,11 @@ public class ManagementServiceImpl implements ManagementService {
 		return managementDAO.userLogin(log);
 	}
 
-	@Override
-	public boolean updatePassword(Login log) {
-		
-		return managementDAO.updatePassword(log);
-	}
+//	@Override
+//	public boolean updatePassword(Login log) {
+//		
+//		return managementDAO.updatePassword(log);
+//	}
 
 	@Override
 	public boolean addUsers(RegisterUser r) {
@@ -97,6 +99,12 @@ public class ManagementServiceImpl implements ManagementService {
 	public Map<String, String> loginUser(Login login) {
 		// TODO Auto-generated method stub
 		return managementDAO.loginUser(login);
+	}
+
+	@Override
+	public boolean updatePassword(PasswordUpdateRequest request) {
+		
+		return managementDAO.updatePassword(request);
 	}
 
 //	@Override

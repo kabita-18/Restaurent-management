@@ -8,7 +8,9 @@ import example.com.model.Login;
 import example.com.model.Manager;
 import example.com.model.Menu;
 import example.com.model.Orders;
+import example.com.model.PasswordUpdateRequest;
 import example.com.model.RegisterUser;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface ManagementDAO {
 
@@ -32,7 +34,7 @@ public interface ManagementDAO {
 
 	public int userLogin(Login log);
 
-	public boolean updatePassword(Login log);
+//	public boolean updatePassword(Login log);
 
 	public boolean addUsers(RegisterUser r);
 
@@ -41,6 +43,8 @@ public interface ManagementDAO {
 	public JwtResponse generateJwtToken(String useremail);
 
 	public Map<String, String> loginUser(Login login);
+
+	public boolean updatePassword(PasswordUpdateRequest request);
 
 //	public boolean updatePassword(String email, String newPassword);
 

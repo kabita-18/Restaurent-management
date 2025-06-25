@@ -27,8 +27,10 @@ import example.com.model.Login;
 import example.com.model.Manager;
 import example.com.model.Menu;
 import example.com.model.Orders;
+import example.com.model.PasswordUpdateRequest;
 import example.com.model.RegisterUser;
 import example.com.service.ManagementService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/deliciousbyte")
@@ -37,8 +39,7 @@ public class AppController {
 	@Autowired
 	private ManagementService service;
 	@Autowired
-    private AuthenticationManager authenticationManager;
-	
+	private AuthenticationManager authenticationManager;
 
 	@GetMapping("/welcome")
 	public String welcome() {
@@ -59,33 +60,36 @@ public class AppController {
 		return "Something went wrong";
 
 	}
-	//Mannual user login method
+
+	// Mannual user login method
 	@PostMapping("/loginuser")
 	public int userLogin(@RequestBody Login login) {
 		System.out.println(login);
 		return service.userLogin(login);
 	}
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@RequestBody Login login) {
-		 try {
-	            Map<String, String> response = service.loginUser(login);
-	            return ResponseEntity.ok(response);
-	        } catch (BadCredentialsException e) {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
-	        }
+		try {
+			Map<String, String> response = service.loginUser(login);
+			return ResponseEntity.ok(response);
+		} catch (BadCredentialsException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+		}
 	}
 
 	@PostMapping("/owner/menu/add")
 
-	public String addMenuItems(@RequestBody Menu m) {
-		if (service.addMenuItems(m)) {
-			return "Menu added successfully...";
-		}
-		return "invalid menu";
+	public ResponseEntity<String> addMenuItems(@RequestBody Menu m) {
+	    if (service.addMenuItems(m)) {
+	        return ResponseEntity.ok("Menu added successfully.");
+	    } else {
+	        return ResponseEntity.badRequest()
+	                             .body("Warning: Menu already exists.");
+	    }
 	}
 
 	@PutMapping("/owner/menu/update")
@@ -122,7 +126,7 @@ public class AppController {
 		return "update failed..";
 	}
 
-	@PostMapping("/manager/order/addorder")
+	@PostMapping("/order/addorder")
 	public String addOrderByManager(@RequestBody Orders odr) {
 		if (service.addOrderByManager(odr)) {
 			return "Order added successfully...";
@@ -141,7 +145,6 @@ public class AppController {
 	}
 
 	@GetMapping("/view/menu")
-
 	public List<Menu> listOfMenus() {
 		List<Menu> m = service.findAllMenus();
 		if (m != null) {
@@ -159,15 +162,32 @@ public class AppController {
 		return null;
 	}
 
-	@PutMapping("/manager/updatepassword")
-	public String updatePassword(@RequestBody Login log) {
-		System.out.println(log.getUseremail());
-		System.out.println(log.getPassword());
+//	@PutMapping("/manager/updatepassword")
+//	public String updatePassword(@RequestBody Login log) {
+//		System.out.println(log.getUseremail());
+//		System.out.println(log.getPassword());
+//
+//		if (service.updatePassword(log)) {
+//			return "Update Successful...";
+//		}
+//		return "Error..";
+//	}
 
-		if (service.updatePassword(log)) {
-			return "Update Successful...";
+	@PutMapping("/manager/updatepassword")
+	public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest request) {
+		try {
+			boolean success = service.updatePassword(request);
+			if (success) {
+				return ResponseEntity.ok("Password updated successfully.");
+			} else {
+				return ResponseEntity.status(400).body("Invalid current password.");
+			}
 		}
-		return "Error..";
+		catch (RuntimeException ex) {
+		       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+		  }
+		
+		
 	}
 
 }

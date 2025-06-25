@@ -35,7 +35,8 @@ public class SecurityConfig {
 	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	        http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(req -> req.anyRequest().permitAll())
-            .cors(c -> c.configurationSource(customCorsConfig.corsConfigurationSource()));
+            .cors(c -> c.configurationSource(customCorsConfig.corsConfigurationSource()))
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	        return http.build();
 	    }
 	  
